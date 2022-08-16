@@ -1,45 +1,28 @@
-import numpy as np
-
-shots_count = 3
-shots = (
-        (-1, -1, 1, 1),
-        (-1, 0, 1, 1),
-        (-1, -1, 0, 1)
-    )
-
-# shots_count = 4
-# shots = (
-#         (-3, -3, 3, 3),
-#         (0, 0, 0, 0),
-#         (-5, 0, 4, 0),
-#         (-1, -4, 1, 3)
-#     )
+shots_count = int(input())
+shots = tuple(tuple(map(int, input().split())) for _ in range(shots_count))
 
 shots_data = {}
-
-
-class Shot():
-
-    def __init__(self, coordinates: tuple):
-        self.x1, self.y1, self.x2, self.y2 = coordinates
-
-    @property
-    def grid(self):
-        return np.mgrid[self.x1:self.x2:1,self.y1:self.y2:1]
-
-    def __repr__(self):
-        return f'({self.x1}, {self.y1}, {self.x2}, {self.y2})'
-
+sequence = [0] * shots_count
 
 for i in range(shots_count):
-    shots_data[i + 1] = Shot(shots[i])
+    shots_data[i + 1] = tuple(shots[i])
 
-print(shots_data)
+result_image = set()
 
-shot1 = shots_data[1].grid
-shot2 = shots_data[2].grid
+for i in range(shots_count, 0, -1):
 
-print('shot1', shot1, sep='\n')
-print('shot2', shot2, sep='\n')
-print(f'result: {shot1 - shot2}')
+    x1, y1, x2, y2 = shots_data[i]
+    mesh = set()
+
+    for x in range(x1, x2):
+        for y in range(y1, y2):
+            mesh.add((x, y))
+
+    result = len(mesh - result_image)
+    sequence[i * -1] = result
+    result_image.update(mesh)
+
+
+for i in sequence[::-1]:
+    print(i)
 
