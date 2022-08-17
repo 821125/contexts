@@ -1,23 +1,31 @@
-shots_count = 3
-shots = ((-1, -1, 1, 1), (-1, 0, 1, 1), (-1, -1, 0, 1))
+import itertools
+from collections import deque
 
-sequence = [0] * shots_count
 
+class Shot:
+
+    def __init__(self, x1, y1, x2, y2):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+
+
+shots_count = int(input())
+shots = deque()
+stack = deque()
 result_image = set()
+	
+for _ in range(shots_count):
+    shots.append(Shot(*tuple(map(int, input().split()))))
 
-for i in range(-1, -shots_count - 1, -1):
+for _ in range(shots_count):
 
-    x1, y1, x2, y2 = shots[i]
-    mesh = set()
-    
-    for x in range(x1, x2):
-        for y in range(y1, y2):
-            mesh.add((x, y))
+    shot = shots.pop()   
+    mesh = set(itertools.product(range(shot.x1, shot.x2), range(shot.y1, shot.y2)))
 
-    result = len(mesh - result_image)
-    sequence[i] = result
+    stack.append(len(mesh - result_image))
     result_image.update(mesh)
 
-
-for i in range(-shots_count, 0, 1):
-    print(sequence[i])
+for _ in range(shots_count):
+    print(stack.pop())
